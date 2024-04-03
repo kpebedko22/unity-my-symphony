@@ -1,52 +1,50 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Скрипт для главного меню:
+/// - выбор аудио из списка;
+/// - запуск сцены с игрой
+/// - выход из игры
+/// </summary>
 public class MainMenuController : MonoBehaviour {
-	/*
-	 * Скрипт для главного меню
-	 * для работы с UI - выбор аудио из списка
-	 * запуск сцены с игрой
-	 * или выхода из игры
-	 */
+    /// <summary>
+    /// Массив аудио (заполняется через Unity)
+    /// </summary>
+    public AudioClip[] audioClips;
 
-	// массив аудио (заполняется через Unity)
-	public AudioClip[] audioClips;
+    /// <summary>
+    /// Выпадающий список опций (задается через Unity)
+    /// </summary>
+    public Dropdown dropDown;
 
-	// объект Выпадающий список опций (задается через Unity)
-	public Dropdown dropDown;
+    private void Start() {
+        Cursor.visible = true;
 
-	void Start () {
-		Cursor.visible = true;
+        // Добавляем опции в выпадающий список
+        dropDown.options = new List<Dropdown.OptionData>(
+            audioClips.Select(x => new Dropdown.OptionData(x.name))
+        );
+    }
 
-		// очищаем выпадающий список с опциями
-		dropDown.ClearOptions();
+    /// <summary>
+    /// Старт игрового процесса
+    /// </summary>
+    public void ClickButtonStart() {
+        // Сохранение выбранного аудио в статическом сторэдже
+        StaticStorage.AudioClip = audioClips[dropDown.value];
 
-		// создаем список опций
-		List<Dropdown.OptionData> audioItems = new List<Dropdown.OptionData>();
+        // Открытие сцены с игровым процессом
+        SceneManager.LoadScene("VisualizationScene", LoadSceneMode.Single);
+    }
 
-		// для каждого объекта аудио из массива
-		// создаем опцию для выпадающего меню
-		foreach(var audio in audioClips) {
-			var audioOption = new Dropdown.OptionData(audio.name);
-			audioItems.Add(audioOption);
-		}
-
-		// добавляем опции в выпадающий список
-		dropDown.AddOptions(audioItems);
-	}
-	
-	public void ClickButtonStart() {
-		// сохраняем в статическом классе выбранное аудио
-		StaticStorage.audioClip = audioClips[dropDown.value];
-
-		// открыть сцену с игровым процессом
-		SceneManager.LoadScene("VisualizationScene", LoadSceneMode.Single);
-	}
-
-	public void ClickButtonExit() {
-		// закрыть приложение
-		Application.Quit();
-	}
+    /// <summary>
+    /// Закрытие приложения
+    /// </summary>
+    public void ClickButtonExit() {
+        Application.Quit();
+    }
 }

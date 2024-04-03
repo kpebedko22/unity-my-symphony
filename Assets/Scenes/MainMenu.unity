@@ -775,7 +775,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1124398995
 Canvas:
   m_ObjectHideFlags: 0
@@ -1073,6 +1073,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClips:
+  - {fileID: 8300000, guid: 8ce9e889faa18461c8e23c2339d573d7, type: 3}
+  - {fileID: 8300000, guid: 4915a8d5204104db6982b9797f45bbe1, type: 3}
   - {fileID: 8300000, guid: 27eef40e5cb5c1b498765a92ff95f2cd, type: 3}
   - {fileID: 8300000, guid: 45333da9c24826541948a566ac2e24e6, type: 3}
   - {fileID: 8300000, guid: eb71688e912d6ee4bb8cf7baf394d7d1, type: 3}

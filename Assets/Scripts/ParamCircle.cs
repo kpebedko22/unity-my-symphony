@@ -1,61 +1,66 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Скрипт для изменения размера кружочков, которые стреляют противниками
+/// </summary>
 public class ParamCircle : MonoBehaviour {
-	/*
-	 * Скрипт для изменения размера кружочков
-	 * которые стреляют противниками
-	 */
+    /// <summary>
+    /// Номер диапазона
+    /// </summary>
+    public int band;
 
-	// номер диапазона
-	public int band;
+    /// <summary>
+    /// Начальный scale, и множитель scale
+    /// </summary>
+    public float startScale, scaleMultiplier;
 
-	// начальный scale, и множитель scale
-	public float startScale, scaleMultiplier;
+    /// <summary>
+    /// Время спавна
+    /// </summary>
+    private float nextSpawnTime;
 
-	// время спавна
-	private float nextSpawnTime;
+    /// <summary>
+    /// Объект, в котором создаются Противники
+    /// </summary>
+    public GameObject enemyContainer;
 
-	// объект, в котором создаются Противники
-	public GameObject enemyContainer;
+    /// <summary>
+    /// Флаг спавна
+    /// </summary>
+    private bool ableToShoot;
 
-	// флаг спавна
-	private bool ableToShoot;
+    private void Start() {
+        // инициализируем время спавна как время запуска игры + 1,5секунды
+        nextSpawnTime = Time.time + 1.5f;
 
-	void Start() {
-		// инициализируем время спавна как время запуска игры + 1,5секунды
-		nextSpawnTime = Time.time + 1.5f;
+        // флаг спавна ставим в true
+        ableToShoot = true;
+    }
 
-		// флаг спавна ставим в true
-		ableToShoot = true;
-	}
+    private void Update() {
+        // вычисляем значение scale для координат X, Y
+        var x = AudioEngine.bandBuffer[band] * scaleMultiplier + startScale;
 
-	void Update () {
+        // если был скачок в музыке
+        // то создаем Противника и ждем некоторое время, чтобы создавать еще
+        // также используем флаг, необходимо чтобы значение сначала опустилось ниже амплитуды
+        if (x > AudioEngine.amplitude * scaleMultiplier + startScale) {
+            if (ableToShoot && Time.time > nextSpawnTime) {
+                // вызываем создание Противника передавая текущий объект, чтобы знать начальную позицию
+                enemyContainer.GetComponent<EnemyInstantiation>().InstantiateEnemy(band, transform);
 
-		// вычисляем значение scale для координат X, Y
-		float x = (AudioEngine.bandBuffer[band] * scaleMultiplier) + startScale;
+                // флаг спавна в false
+                // увеличиваем время спавна
+                ableToShoot = false;
+                nextSpawnTime += 1.5f;
+            }
+        }
+        // иначе флаг спавна = true
+        else {
+            ableToShoot = true;
+        }
 
-		// если был скачок в музыке
-		// то создаем Противника и ждем некоторое время, чтобы создавать еще
-		// также используем флаг, необходимо чтобы значение сначала опустилось ниже амплитуды
-		if (x > (startScale + (AudioEngine.amplitude * scaleMultiplier))) {
-
-			if (ableToShoot && Time.time > nextSpawnTime) {
-				// вызываем создание Противника передавая текущий объект, чтобы знать начальную позицию
-				enemyContainer.GetComponent<EnemyInstantiation>().InstantiateEnemy(band, this.transform);
-
-				// флаг спавна в false
-				// увеличиваем время спавна
-				ableToShoot = false;
-				nextSpawnTime += 1.5f;
-			}
-		}
-
-		// иначе флаг спавна = true
-		else {
-			ableToShoot = true;
-		}
-
-		// меняем размер текущего объекта
-		transform.localScale = new Vector3(x, x, transform.localScale.z);
-	}
+        // меняем размер текущего объекта
+        transform.localScale = new Vector3(x, x, transform.localScale.z);
+    }
 }

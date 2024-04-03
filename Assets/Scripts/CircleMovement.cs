@@ -1,32 +1,31 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Скрипт для движения объектов по кругу вокруг центра с заданным радиусом и скоростью
+/// </summary>
 public class CircleMovement : MonoBehaviour {
-	/*
-	 * Скрипт для движения объектов по кругу вокруг центра
-	 * с заданным радиусом и скоростью
-	 */
+    public Transform center;
 
-	public Transform center;
+    [SerializeField] private float radius = 2f, angularSpeed = 2f;
 
-	[SerializeField]
-	float radius = 2f, angularSpeed = 2f;
+    public float angle = 0f;
 
-	public float angle = 0f;
+    private void Update() {
+        var centerPos = center.position;
 
-	float positionX, positionY;
+        // Вычисляем новые координаты X, Y для объекта
+        // Задаем позицию объекта по вычисленным координатам
+        transform.position = new Vector2(
+            centerPos.x + Mathf.Cos(angle) * radius,
+            centerPos.y + Mathf.Sin(angle) * radius
+        );
 
-	void Update () {
-		// вычисляем новые координаты X, Y для объекта
-		positionX = center.position.x + Mathf.Cos(angle) * radius;
-		positionY = center.position.y + Mathf.Sin(angle) * radius;
+        // Увеличиваем текущий угол
+        angle += Time.deltaTime * angularSpeed;
 
-		// задаем позицию объекта по вычисленным координатам
-		transform.position = new Vector2(positionX, positionY);
-
-		// увеличиваем текущий угол
-		angle += Time.deltaTime * angularSpeed;
-
-		// если угол больше 360 - сбрасываем его до 0
-		if (angle >= 360f) angle = 0f;
-	}
+        // Если угол больше 360 - сбрасываем его до 0
+        if (angle >= 360f) {
+            angle = 0f;
+        }
+    }
 }

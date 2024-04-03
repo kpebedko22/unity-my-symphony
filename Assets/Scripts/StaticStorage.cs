@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 
-public static class StaticStorage {
-	/* 
-	 * Статический класс для передачи данных между сценами
-	 */
-
-	// статическое поле для хранения аудио
-	public static AudioClip audioClip { set; get; }
+/// <summary>
+/// Статический класс для передачи данных между сценами
+/// </summary>
+public static class StaticStorage
+{
+    /// <summary>
+    /// Статическое поле для хранения аудио
+    /// </summary>
+    public static AudioClip AudioClip { set; get; }
 }

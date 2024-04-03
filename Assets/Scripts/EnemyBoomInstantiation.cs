@@ -1,25 +1,25 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Скрипт для создания объектов Взрыв
+/// </summary>
 public class EnemyBoomInstantiation : MonoBehaviour {
-	/*
-	 * Скрипт для создания объектов Взрыв
-	 */
+    /// <summary>
+    /// Префаб объекта Взрыв
+    /// </summary>
+    public GameObject prefab;
 
-	// префаб объекта Взрыв
-	public GameObject prefab;
+    public void InstantiateEnemyBoom(Vector3 positionBoom) {
+        // Родитель - пустой объект содержащий все Взрывы
+        // Позиция - конечная позиция Противника
+        GameObject instanceEnemyBoom = Instantiate(
+            prefab,
+            positionBoom,
+            Quaternion.identity,
+            transform
+        );
 
-	public void InstantiateEnemyBoom(Vector3 positionBoom) {
-
-		// создаем объект Взрыва на основе префаба
-		GameObject instanceEnemyBoom = (GameObject)Instantiate(prefab);
-
-		// задаем позицию объекта Взрыв
-		// позицию получаем как параметр - конечная позиция Противника при движении
-		instanceEnemyBoom.transform.position = positionBoom;
-
-		// задаем родителя - пустой объект содержащий все Взрывы
-		// и задаем имя объекта
-		instanceEnemyBoom.transform.SetParent(this.transform);
-		instanceEnemyBoom.name = "enemyBoom";
-	}
+        // Задаем имя объекта
+        instanceEnemyBoom.name = "enemyBoom";
+    }
 }

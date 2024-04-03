@@ -1,43 +1,57 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Скрипт для движения от startPosition до endPosition используется для объектов Противник
+/// </summary>
 public class LerpMover : MonoBehaviour {
-	/*
-	 * Скрипт для движения от startPosition до endPosition
-	 * используется для объектов Противник
-	 */
+    /// <summary>
+    /// Начальная позиции движения
+    /// </summary>
+    private Vector2 startPosition;
 
-	// начальная и конечная позиции движения
-	private Vector2 startPosition;
-	private Vector2 endPosition;
+    /// <summary>
+    /// Конечная позиции движения
+    /// </summary>
+    private Vector2 endPosition;
 
-	// прогресс и шаг
-	private float progress;
-	public float step;
+    /// <summary>
+    /// Прогресс
+    /// </summary>
+    private float progress;
 
-	// объект, где создаются объекты Взрыв (анимация завершения движения)
-	public GameObject enemyBoomContainer;
+    /// <summary>
+    /// Шаг
+    /// </summary>
+    public float step;
 
-	void Start () {
+    /// <summary>
+    /// Объект, где создаются объекты Взрыв (анимация завершения движения)
+    /// </summary>
+    public GameObject enemyBoomContainer;
 
-		// при инициализации объекта Противник
-		// задаем начальную и конечную позиции движения
-		startPosition = transform.position;
-		endPosition = -startPosition;
-	}
-	
-	void FixedUpdate () {
+    /// <summary>
+    /// При инициализации объекта Противник задаем начальную и конечную позиции движения
+    /// </summary>
+    private void Start() {
+        startPosition = transform.position;
+        endPosition = -startPosition;
+    }
 
-		// вычисляем новое положение объекта
-		transform.position = Vector2.Lerp(startPosition, endPosition, progress);
-		progress += step;
+    private void FixedUpdate() {
+        // вычисляем новое положение объекта
+        transform.position = Vector2.Lerp(startPosition, endPosition, progress);
+        progress += step;
 
-		// если объект дошел до конечной позиции 
-		if (transform.position.x == endPosition.x && transform.position.y == endPosition.y) {
-			// создаем объект Взрыв - анимацию
-			enemyBoomContainer.GetComponent<EnemyBoomInstantiation>().InstantiateEnemyBoom(transform.position);
+        //if (transform.position.x == endPosition.x && transform.position.y == endPosition.y) {
+        // Если объект не дошел до конечной позиции, выход 
+        if (!transform.position.Equals(endPosition)) {
+            return;
+        }
 
-			// уничтожаем объект
-			Destroy(transform.gameObject);
-		}
-	}
+        // Создаем объект Взрыв
+        enemyBoomContainer.GetComponent<EnemyBoomInstantiation>().InstantiateEnemyBoom(transform.position);
+
+        // Уничтожаем текущий объект
+        Destroy(transform.gameObject);
+    }
 }

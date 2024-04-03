@@ -1,26 +1,23 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Скрипт для передвижения Героя за курсором
+/// </summary>
 public class MoveMyHero : MonoBehaviour {
-	/*
-	 * Скрипт для передвижения Героя за курсором
-	 */
+    private Rigidbody2D _rb;
 
-	Rigidbody2D rb;
-	float moveSpeed = 500f;
+    private const float MoveSpeed = 500f;
 
-	void Start () {
+    private void Start() {
+        Cursor.visible = false;
 
-		// скрываем курсор
-		Cursor.visible = false;
+        _rb = GetComponent<Rigidbody2D>();
+    }
 
-		rb = GetComponent<Rigidbody2D>();
-	}
-	
-	void Update () {
-
-		// получаем координаты мыши (курсора) и перемещаем Героя в текущую точку курсора
-		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 direction = (mousePosition - transform.position).normalized;
-		rb.velocity = new Vector2(direction.x * moveSpeed, direction.y * moveSpeed);
-	}
+    private void Update() {
+        // получаем координаты мыши (курсора) и перемещаем Героя в текущую точку курсора
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = (mousePosition - transform.position).normalized;
+        _rb.velocity = new Vector2(direction.x * MoveSpeed, direction.y * MoveSpeed);
+    }
 }

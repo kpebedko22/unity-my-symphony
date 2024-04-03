@@ -1,16 +1,18 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Скрипт бесконечного вращения объекта вокруг собственного центра
+/// </summary>
 public class EndlessRotation : MonoBehaviour {
-	/*
-	 * Скрипт бесконечного вращения объекта вокруг собственного центра
-	 */
+    /// <summary>
+    /// Угол, на который выполняется поворот объекта
+    /// </summary>
+    [SerializeField] private float angle = 3f;
 
-	// угол на который выполняется поворот объекта
-	[SerializeField]
-	float angle = 3f;
-	
-	void Update () {
-		// поворачиваем объект на угол angle по оси Z
-		transform.Rotate(new Vector3(0, 0, angle));
-	}
+    /// <summary>
+    /// Поворот объекта на угол angle по оси Z
+    /// </summary>
+    private void Update() {
+        transform.Rotate(new Vector3(0, 0, angle));
+    }
 }

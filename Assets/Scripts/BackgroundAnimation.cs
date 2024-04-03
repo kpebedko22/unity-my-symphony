@@ -1,51 +1,61 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Скрипт для создания анимации на фоне
+/// </summary>
 public class BackgroundAnimation : MonoBehaviour {
-	/*
-	 * Скрипт для создания анимации на фоне
-	 */
+    /// <summary>
+    /// Префаб объекта для фона (обычный прямоугольник)
+    /// </summary>
+    public GameObject prefab;
 
-	// префаб объекта для фона (обычный прямоугольник)
-	public GameObject prefab;
+    /// <summary>
+    /// Массив объектов
+    /// </summary>
+    private readonly GameObject[] _samples = new GameObject[512];
 
-	// массив этих объектов
-	GameObject[] sampleSquare = new GameObject[512];
+    /// <summary>
+    /// Коэфициент увеличения объекта
+    /// </summary>
+    public float maxScale;
 
-	// коэфициент увеличения объекта
-	public float maxScale;
+    private void Start() {
+        // Создаем 512 прямоугольников по кругу
+        for (var i = 0; i < 512; i++) {
+            // Формула для позиции:
+            // берем косинус (для икса) и синус (для игрика) от (2 * pi / 512 * i)
+            // и умножаем на радиус = 80
+            var sample = Instantiate(
+                prefab,
+                new Vector2(
+                    Mathf.Cos(0.01227185f * i) * 80f,
+                    Mathf.Sin(0.01227185f * i) * 80f
+                ),
+                Quaternion.identity,
+                transform
+            );
 
-	void Start () {
+            // Задаем, куда направлен верх объекта (делаем поворот объекта)
+            sample.transform.up = -sample.transform.position;
 
-		// создаем 512 прямоугольников по кругу
-		for (int i = 0; i < 512; i++) {
+            sample.name = "sample" + i;
 
-			// создаем объект
-			GameObject bgSquare = (GameObject)Instantiate(prefab);
+            _samples[i] = sample;
+        }
+    }
 
-			// задаем родителя - объект на который прикреплен данный скрипт
-			bgSquare.transform.SetParent(this.transform);
-
-			// задаем имя объекта
-			bgSquare.name = "bgSquare" + i;
-
-			// задаем позицию - координаты X, Y высчитываем как
-			// берем косинус (для икса) и синус (для игрика) от (2 * pi / 512 * i)
-			// и умножаем на радиус = 80
-			bgSquare.transform.position = new Vector2(Mathf.Cos(0.01227185f * i) * 80f, Mathf.Sin(0.01227185f * i) * 80f);
-
-			// задаем куда направлен вверх объекта (делаем поворот объекта)
-			bgSquare.transform.up = -bgSquare.transform.position;
-
-			// сохраняем в массиве
-			sampleSquare[i] = bgSquare;
-		}
-	}
-	
-	void FixedUpdate () {
-
-		// каждый прямоугольник увеличиваем/уменьшаем по высоте (т.е. по координате Y)
-		for (int i = 0; i < 512; i++)
-			if (sampleSquare != null)
-				sampleSquare[i].transform.localScale = new Vector3(1, (AudioEngine.samples[i] * maxScale) + 2, 1);
-	}
+    /// <summary>
+    /// Каждый прямоугольник увеличиваем/уменьшаем по высоте (т.е. по координате Y)
+    /// </summary>
+    private void FixedUpdate() {
+        for (var i = 0; i < 512; i++) {
+            if (_samples != null) {
+                _samples[i].transform.localScale = new Vector3(
+                    1,
+                    (AudioEngine.samples[i] * maxScale) + 2,
+                    1
+                );
+            }
+        }
+    }
 }
