@@ -6,7 +6,7 @@ public class AudioCircleInstantiation : MonoBehaviour {
     public GameObject enemyContainer;
 
     private void Start() {
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < AudioEngine.FrequencyRangesCount; i++) {
             GameObject instanceAudioCircle = Instantiate(audioCirclePrefab, transform);
 
             instanceAudioCircle.GetComponent<ParamCircle>().band = i;

@@ -8,23 +8,33 @@ using System;
 [RequireComponent(typeof(AudioSource))]
 public class AudioEngine : MonoBehaviour {
     /// <summary>
+    /// Количество диапазонов частот
+    /// </summary>
+    public const int FrequencyRangesCount = 8;
+
+    /// <summary>
+    /// Количество звуковых фрагментов
+    /// </summary>
+    public const int SamplesCount = 512;
+
+    /// <summary>
     /// Источник аудио
     /// </summary>
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
 
     // samples - массив сэмплов (звуковые фрагменты)
     // freqBand - массив диапазонов частот
     // bandBuffer - массив для смягчения визуализации
     // bufferDecrease - массив для смягчения визуализации
-    public static float[] samples = new float[512];
-    public static float[] freqBand = new float[8];
-    public static float[] bandBuffer = new float[8];
-    private float[] bufferDecrease = new float[8];
+    public static float[] samples = new float[SamplesCount];
+    private static readonly float[] FreqBand = new float[FrequencyRangesCount];
+    public static float[] bandBuffer = new float[FrequencyRangesCount];
+    private float[] bufferDecrease = new float[FrequencyRangesCount];
 
     //
-    private float[] freqBandHighest = new float[8];
-    public static float[] audioBand = new float[8];
-    public static float[] audioBandBuffer = new float[8];
+    private float[] freqBandHighest = new float[FrequencyRangesCount];
+    public static float[] audioBand = new float[FrequencyRangesCount];
+    public static float[] audioBandBuffer = new float[FrequencyRangesCount];
 
     // амплитуда, буфер амлитуды и наибольшее значение амплитуды
     public static float amplitude, amplitudeBuffer;
@@ -39,12 +49,12 @@ public class AudioEngine : MonoBehaviour {
         GetComponent<AudioSource>().clip = StaticStorage.AudioClip;
 
         // задаем источник аудио из компонента AudioSource
-        audioSource = GetComponent<AudioSource>();
+        _audioSource = GetComponent<AudioSource>();
 
         // включаем воспроизведение аудио
-        audioSource.Play();
+        _audioSource.Play();
 
-        textAudioTotalTime.text = TimeFromSeconds(audioSource.clip.length);
+        textAudioTotalTime.text = TimeFromSeconds(_audioSource.clip.length);
     }
 
     private string TimeFromSeconds(float seconds) {
@@ -54,7 +64,7 @@ public class AudioEngine : MonoBehaviour {
     }
 
     private void Update() {
-        textAudioPlayedTime.text = TimeFromSeconds(audioSource.time);
+        textAudioPlayedTime.text = TimeFromSeconds(_audioSource.time);
 
         GetSpectrumAudioSource();
         MakeFrequencyBands();
@@ -66,18 +76,18 @@ public class AudioEngine : MonoBehaviour {
         // то вызываем функцию завершения игры
         // (флаг игры нужен чтобы данное действие произошло только раз,
         // т.к. мы в функции Update)
-        if (!audioSource.isPlaying && !GameController.gameIsOver) {
+        if (!_audioSource.isPlaying && !GameController.gameIsOver) {
             Camera.main.GetComponent<GameController>().EndGame();
         }
     }
 
     private void CreateAudioBands() {
-        for (var i = 0; i < 8; i++) {
-            if (freqBand[i] > freqBandHighest[i]) {
-                freqBandHighest[i] = freqBand[i];
+        for (var i = 0; i < FrequencyRangesCount; i++) {
+            if (FreqBand[i] > freqBandHighest[i]) {
+                freqBandHighest[i] = FreqBand[i];
             }
 
-            audioBand[i] = freqBand[i] / freqBandHighest[i];
+            audioBand[i] = FreqBand[i] / freqBandHighest[i];
             audioBandBuffer[i] = bandBuffer[i] / freqBandHighest[i];
         }
     }
@@ -91,7 +101,7 @@ public class AudioEngine : MonoBehaviour {
         float currentAmplitudeBuffer = 0;
 
         // суммируем значения
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < FrequencyRangesCount; i++) {
             currentAmplitude += audioBand[i];
             currentAmplitudeBuffer += audioBandBuffer[i];
         }
@@ -115,19 +125,19 @@ public class AudioEngine : MonoBehaviour {
         // Используйте для уменьшения утечек сигналов по частотным диапазонам.
         // FFTWindow.Blackman
         // W[n] = 0.42 - (0.5 * COS(n/N) ) + (0.08 * COS(2.0 * n/N) ).
-        audioSource.GetSpectrumData(samples, 0, FFTWindow.Blackman);
+        _audioSource.GetSpectrumData(samples, 0, FFTWindow.Blackman);
     }
 
     private void BandBuffer() {
-        for (var i = 0; i < 8; ++i) {
+        for (var i = 0; i < FrequencyRangesCount; ++i) {
             // если значение диапазона больше 
-            if (freqBand[i] > bandBuffer[i]) {
-                bandBuffer[i] = freqBand[i];
+            if (FreqBand[i] > bandBuffer[i]) {
+                bandBuffer[i] = FreqBand[i];
                 bufferDecrease[i] = 0.005f;
             }
 
             // если значение диапазона меньше
-            if (freqBand[i] < bandBuffer[i]) {
+            if (FreqBand[i] < bandBuffer[i]) {
                 bandBuffer[i] -= bufferDecrease[i];
                 bufferDecrease[i] *= 1.2f;
             }
@@ -141,13 +151,13 @@ public class AudioEngine : MonoBehaviour {
     /// 22050 / 512 = 43 hertz / sample
     /// </para> 
     /// <para>
-    /// 20 - 60 Hz <br/>
-    /// 60 - 250 Hz <br/>
-    /// 250 - 500 Hz <br/>
-    /// 500 - 2000 Hz <br/>
-    /// 2000 - 4000 Hz <br/>
-    /// 4000 - 6000 Hz <br/>
-    /// 6000 - 20000 Hz <br/>
+    /// 20 - 60 Hz (Суббас) <br/>
+    /// 60 - 250 Hz (Бас) <br/>
+    /// 250 - 500 Hz (Нижний средний диапазон) <br/>
+    /// 500 - 2000 Hz (Средний диапазон) <br/>
+    /// 2000 - 4000 Hz (Высокий средний диапазон) <br/>
+    /// 4000 - 6000 Hz (Присутствие) <br/>
+    /// 6000 - 20000 Hz (Высокий) <br/>
     /// </para>
     /// <para>
     /// 0: 2 = 86 Hz <br/>
@@ -163,22 +173,22 @@ public class AudioEngine : MonoBehaviour {
     /// </summary>
     private void MakeFrequencyBands() {
         // Номер сэмпла
-        int count = 0;
+        var count = 0;
 
         // Для каждого диапазона вычисляем (average * 10)
-        for (int i = 0; i < 8; i++) {
+        for (var i = 0; i < FrequencyRangesCount; i++) {
             float average = 0;
 
             // Вычисляем кол-во сэмлов в диапазоне
-            int sampleCount = (int)Mathf.Pow(2, i) * 2;
+            var sampleCount = (int)Mathf.Pow(2, i) * 2;
 
             // Если последний диапазон, то добавляем оставшиеся 2
-            if (i == 7) {
+            if (i == FrequencyRangesCount - 1) {
                 sampleCount += 2;
             }
 
             // Вычисляем average
-            for (int j = 0; j < sampleCount; j++) {
+            for (var j = 0; j < sampleCount; j++) {
                 average += samples[count] * (count + 1);
                 count++;
             }
@@ -186,7 +196,7 @@ public class AudioEngine : MonoBehaviour {
             average /= count;
 
             // Сохраняем average увеличивая в 10 раз, т.к. число маленькое
-            freqBand[i] = average * 10;
+            FreqBand[i] = average * 10;
         }
     }
 }

@@ -12,7 +12,7 @@ public class BackgroundAnimation : MonoBehaviour {
     /// <summary>
     /// Массив объектов
     /// </summary>
-    private readonly GameObject[] _samples = new GameObject[512];
+    private readonly GameObject[] _samples = new GameObject[AudioEngine.SamplesCount];
 
     /// <summary>
     /// Коэфициент увеличения объекта
@@ -21,7 +21,7 @@ public class BackgroundAnimation : MonoBehaviour {
 
     private void Start() {
         // Создаем 512 прямоугольников по кругу
-        for (var i = 0; i < 512; i++) {
+        for (var i = 0; i < AudioEngine.SamplesCount; i++) {
             // Формула для позиции:
             // берем косинус (для икса) и синус (для игрика) от (2 * pi / 512 * i)
             // и умножаем на радиус = 80
@@ -48,7 +48,9 @@ public class BackgroundAnimation : MonoBehaviour {
     /// Каждый прямоугольник увеличиваем/уменьшаем по высоте (т.е. по координате Y)
     /// </summary>
     private void FixedUpdate() {
-        for (var i = 0; i < 512; i++) {
+        for (var i = 0; i < AudioEngine.SamplesCount; i++) {
+            
+            // TODO: check this 'if'
             if (_samples != null) {
                 _samples[i].transform.localScale = new Vector3(
                     1,
