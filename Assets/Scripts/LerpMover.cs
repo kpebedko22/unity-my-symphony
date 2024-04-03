@@ -7,17 +7,17 @@ public class LerpMover : MonoBehaviour {
     /// <summary>
     /// Начальная позиции движения
     /// </summary>
-    private Vector2 startPosition;
+    private Vector2 _startPosition;
 
     /// <summary>
     /// Конечная позиции движения
     /// </summary>
-    private Vector2 endPosition;
+    private Vector2 _endPosition;
 
     /// <summary>
     /// Прогресс
     /// </summary>
-    private float progress;
+    private float _progress;
 
     /// <summary>
     /// Шаг
@@ -33,18 +33,17 @@ public class LerpMover : MonoBehaviour {
     /// При инициализации объекта Противник задаем начальную и конечную позиции движения
     /// </summary>
     private void Start() {
-        startPosition = transform.position;
-        endPosition = -startPosition;
+        _startPosition = transform.position;
+        _endPosition = -_startPosition;
     }
 
     private void FixedUpdate() {
         // вычисляем новое положение объекта
-        transform.position = Vector2.Lerp(startPosition, endPosition, progress);
-        progress += step;
+        transform.position = Vector2.Lerp(_startPosition, _endPosition, _progress);
+        _progress += step;
 
-        //if (transform.position.x == endPosition.x && transform.position.y == endPosition.y) {
-        // Если объект не дошел до конечной позиции, выход 
-        if (!transform.position.Equals(endPosition)) {
+        // Если объект дошел до конечной позиции 
+        if (transform.position.x != _endPosition.x || transform.position.y != _endPosition.y) {
             return;
         }
 

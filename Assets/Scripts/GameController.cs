@@ -35,22 +35,25 @@ public class GameController : MonoBehaviour {
     }
 
     private void Update() {
-        // если игра не закончена
-        if (!gameIsOver) {
-            // обновляем текстовые поля счетчиков
-            textTotalEnemies.text = totalEnemies.ToString();
-            textEnemiesBumped.text = enemiesBumped.ToString();
+        // если игра закончена - скип
+        if (gameIsOver) {
+            return;
+        }
+        
+        // обновляем текстовые поля счетчиков
+        textTotalEnemies.text = totalEnemies.ToString();
+        textEnemiesBumped.text = enemiesBumped.ToString();
 
-            // если была нажата клавиша Escape - выход в главное меню
-            if (Input.GetKeyDown(KeyCode.Escape)) {
-                QuitMainMenu();
-            }
+        // если была нажата клавиша Escape - выход в главное меню
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            QuitMainMenu();
         }
     }
 
+    /// <summary>
+    /// Функция для завершения игры
+    /// </summary>
     public void EndGame() {
-        // функция для завершения игры
-
         // включаем отображение курсора
         Cursor.visible = true;
 
@@ -63,7 +66,7 @@ public class GameController : MonoBehaviour {
         // умножаем на 100 и делим на общее число врагов
         // (да, можно получить отрицательное число, т.к. одного врага можно задеть несколько раз)
         if (totalEnemies != 0) {
-            int score = ((totalEnemies - enemiesBumped) * 100 / totalEnemies);
+            int score = (totalEnemies - enemiesBumped) * 100 / totalEnemies;
             // выводим текст и отображаем меню окончания игры
             textScore.text = "Your score is " + score + "%";
         }

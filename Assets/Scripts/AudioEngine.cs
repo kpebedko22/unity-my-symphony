@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System;
 
+/// <summary>
+/// Скрипт, отвечающий за обработку музыки и получения основных необходимых значений
+/// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class AudioEngine : MonoBehaviour {
-    /*
-     * Скрипт, отвечающий за обработку музыки
-     * и получения основных необхоидмых значений
-     */
-
-    // источник аудио
-    AudioSource audioSource;
+    /// <summary>
+    /// Источник аудио
+    /// </summary>
+    private AudioSource audioSource;
 
     // samples - массив сэмплов (звуковые фрагменты)
     // freqBand - массив диапазонов частот
@@ -28,6 +30,9 @@ public class AudioEngine : MonoBehaviour {
     public static float amplitude, amplitudeBuffer;
     private float amplitudeHighest;
 
+    public Text textAudioTotalTime;
+    public Text textAudioPlayedTime;
+
     private void Start() {
         // задаем аудио для компонента AudioSource
         // которое было выбрано на сцене главного меню MainMenu
@@ -37,10 +42,20 @@ public class AudioEngine : MonoBehaviour {
         audioSource = GetComponent<AudioSource>();
 
         // включаем воспроизведение аудио
-        GetComponent<AudioSource>().Play();
+        audioSource.Play();
+
+        textAudioTotalTime.text = TimeFromSeconds(audioSource.clip.length);
+    }
+
+    private string TimeFromSeconds(float seconds) {
+        TimeSpan time = TimeSpan.FromSeconds(seconds);
+
+        return $"{time.Minutes} : {time.Seconds}";
     }
 
     private void Update() {
+        textAudioPlayedTime.text = TimeFromSeconds(audioSource.time);
+
         GetSpectrumAudioSource();
         MakeFrequencyBands();
         BandBuffer();
@@ -51,7 +66,7 @@ public class AudioEngine : MonoBehaviour {
         // то вызываем функцию завершения игры
         // (флаг игры нужен чтобы данное действие произошло только раз,
         // т.к. мы в функции Update)
-        if (!GetComponent<AudioSource>().isPlaying && !GameController.gameIsOver) {
+        if (!audioSource.isPlaying && !GameController.gameIsOver) {
             Camera.main.GetComponent<GameController>().EndGame();
         }
     }
