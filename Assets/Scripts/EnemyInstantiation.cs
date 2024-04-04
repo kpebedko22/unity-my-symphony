@@ -34,8 +34,5 @@ public class EnemyInstantiation : MonoBehaviour {
 
         // Задаем имя объекта
         instanceEnemy.name = "enemy" + band;
-
-        // Для объекта в скрипт движения устанавливаем контейнер, в котором будем создавать объект Взрыв
-        instanceEnemy.GetComponent<LerpMover>().enemyBoomContainer = enemyBoomContainer;
     }
 }
