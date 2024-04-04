@@ -25,11 +25,6 @@ public class LerpMover : MonoBehaviour {
     public float step;
 
     /// <summary>
-    /// Объект, где создаются объекты Взрыв (анимация завершения движения)
-    /// </summary>
-    public GameObject enemyBoomContainer;
-
-    /// <summary>
     /// При инициализации объекта Противник задаем начальную и конечную позиции движения
     /// </summary>
     private void Start() {
@@ -41,16 +36,5 @@ public class LerpMover : MonoBehaviour {
         // вычисляем новое положение объекта
         transform.position = Vector2.Lerp(_startPosition, _endPosition, _progress);
         _progress += step;
-
-        // Если объект дошел до конечной позиции 
-        if (transform.position.x != _endPosition.x || transform.position.y != _endPosition.y) {
-            return;
-        }
-
-        // Создаем объект Взрыв
-        enemyBoomContainer.GetComponent<EnemyBoomInstantiation>().InstantiateEnemyBoom(transform.position);
-
-        // Уничтожаем текущий объект
-        Destroy(transform.gameObject);
     }
 }
