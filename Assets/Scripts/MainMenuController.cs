@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Скрипт для главного меню:
@@ -30,15 +34,56 @@ public class MainMenuController : MonoBehaviour {
         );
     }
 
-    /// <summary>
-    /// Старт игрового процесса
-    /// </summary>
     public void ClickButtonStart() {
+        StartGame(audioClips[dropDown.value]);
+    }
+
+    private void StartGame(AudioClip clip) {
         // Сохранение выбранного аудио в статическом сторэдже
-        StaticStorage.AudioClip = audioClips[dropDown.value];
+        StaticStorage.AudioClip = clip;
 
         // Открытие сцены с игровым процессом
         SceneManager.LoadScene("VisualizationScene", LoadSceneMode.Single);
+    }
+
+    public async void ClickButtonTest() {
+        var path = EditorUtility.OpenFilePanel("Select mp3 song", "", "mp3");
+
+        if (path == "") {
+            Debug.Log("Path not selected");
+
+            return;
+        }
+
+        var clip = await LoadClip($"file://{path}");
+
+        StartGame(clip);
+    }
+
+    async Task<AudioClip> LoadClip(string path) {
+        AudioClip clip = null;
+
+        using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.MPEG)) {
+            uwr.SendWebRequest();
+
+            try {
+                while (!uwr.isDone) {
+                    await Task.Delay(5);
+                }
+
+                if (uwr.result == UnityWebRequest.Result.ProtocolError) {
+                    Debug.Log($"{uwr.error}");
+                }
+                else {
+                    clip = DownloadHandlerAudioClip.GetContent(uwr);
+                }
+            }
+            catch (Exception err) {
+                Debug.Log($"{err.Message}, {err.StackTrace}");
+            }
+        }
+
+        return clip;
     }
 
     /// <summary>
