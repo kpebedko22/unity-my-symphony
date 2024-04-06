@@ -34,12 +34,16 @@ public class ParamCircle : MonoBehaviour {
     /// </summary>
     private bool _isAbleToShoot;
 
+    private EnemyInstantiation _enemyInstantiation;
+
     private void Start() {
         // инициализируем время спавна как время запуска игры + 1,5секунды
         _nextSpawnTime = Time.time + 1.5f;
 
         // флаг спавна ставим в true
         _isAbleToShoot = true;
+
+        _enemyInstantiation = enemyContainer.GetComponent<EnemyInstantiation>();
     }
 
     private void Update() {
@@ -52,7 +56,7 @@ public class ParamCircle : MonoBehaviour {
         if (x > AudioEngine.amplitude * scaleMultiplier + startScale) {
             if (_isAbleToShoot && Time.time > _nextSpawnTime) {
                 // вызываем создание Противника передавая текущий объект, чтобы знать начальную позицию
-                enemyContainer.GetComponent<EnemyInstantiation>().InstantiateEnemy(band, transform);
+                _enemyInstantiation.InstantiateEnemy(band, transform);
 
                 // флаг спавна в false
                 // увеличиваем время спавна

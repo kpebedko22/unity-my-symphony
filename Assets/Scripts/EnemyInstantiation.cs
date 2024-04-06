@@ -9,11 +9,6 @@ public class EnemyInstantiation : MonoBehaviour {
     /// </summary>
     public GameObject prefab;
 
-    /// <summary>
-    /// Объект, в котором создаются объекты Взрыв
-    /// </summary>
-    public GameObject enemyBoomContainer;
-
     public void InstantiateEnemy(int band, Transform shooter) {
         // Инкриментируем количество созданных объектов Противников
         GameController.totalEnemies++;
