@@ -43,15 +43,22 @@ public class AudioEngine : MonoBehaviour {
     public Text textAudioTotalTime;
     public Text textAudioPlayedTime;
 
-    private void Start() {
-        // задаем аудио для компонента AudioSource
-        // которое было выбрано на сцене главного меню MainMenu
-        GetComponent<AudioSource>().clip = StaticStorage.AudioClip;
+    private AudioClip _audioClip;
 
+    private void Start() {
         // задаем источник аудио из компонента AudioSource
         _audioSource = GetComponent<AudioSource>();
 
+        _audioClip = StaticStorage.AudioClip;
+
+        if (!_audioClip) {
+            Debug.Log("Clip is not set.");
+            return;
+        }
+
+        // задаем аудио для компонента AudioSource
         // включаем воспроизведение аудио
+        _audioSource.clip = _audioClip;
         _audioSource.Play();
 
         textAudioTotalTime.text = TimeFromSeconds(_audioSource.clip.length);
@@ -64,6 +71,10 @@ public class AudioEngine : MonoBehaviour {
     }
 
     private void Update() {
+        if (!_audioClip) {
+            return;
+        }
+
         textAudioPlayedTime.text = TimeFromSeconds(_audioSource.time);
 
         GetSpectrumAudioSource();
