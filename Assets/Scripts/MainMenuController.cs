@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using SFB;
 
 /// <summary>
 /// Скрипт для главного меню:
@@ -47,7 +48,7 @@ public class MainMenuController : MonoBehaviour {
     }
 
     public async void ClickButtonTest() {
-        var path = EditorUtility.OpenFilePanel("Select mp3 song", "", "mp3");
+        var path = StandaloneFileBrowser.OpenFilePanel("Select mp3 song", "", "mp3", false)[0];
 
         if (path == "") {
             Debug.Log("Path not selected");
