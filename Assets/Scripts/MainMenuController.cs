@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using Models;
 using SFB;
 
 /// <summary>
@@ -42,6 +42,8 @@ public class MainMenuController : MonoBehaviour {
     private void StartGame(AudioClip clip) {
         // Сохранение выбранного аудио в статическом сторэдже
         StaticStorage.AudioClip = clip;
+        
+        GameManager.Instance.Reset();
 
         // Открытие сцены с игровым процессом
         SceneManager.LoadScene("VisualizationScene", LoadSceneMode.Single);

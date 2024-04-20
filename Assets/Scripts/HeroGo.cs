@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Models;
 using UnityEngine;
 
 /// <summary>
@@ -12,9 +12,13 @@ public class HeroGo : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
+        if (GameManager.Instance.IsOver) {
+            return;
+        }
+
         // Если Герой столкнулся с противником
         if (other.CompareTag("Enemy")) {
-            GameController.enemiesBumped++;
+            GameManager.Instance.EnemyWasBumped();
         }
 
         // Если Герой столкнулся с Наградой

@@ -1,4 +1,5 @@
 using System.Collections;
+using Models;
 using UnityEngine;
 
 public class AwardGo : MonoBehaviour {

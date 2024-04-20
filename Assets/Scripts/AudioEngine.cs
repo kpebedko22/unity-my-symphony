@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Models;
 
 /// <summary>
 /// Скрипт, отвечающий за обработку музыки и получения основных необходимых значений
@@ -87,8 +88,8 @@ public class AudioEngine : MonoBehaviour {
         // то вызываем функцию завершения игры
         // (флаг игры нужен чтобы данное действие произошло только раз,
         // т.к. мы в функции Update)
-        if (!_audioSource.isPlaying && !GameController.gameIsOver) {
-            Camera.main.GetComponent<GameController>().EndGame();
+        if (!_audioSource.isPlaying && !GameManager.Instance.IsOver) {
+            GameManager.Instance.EndGame();
         }
     }
 

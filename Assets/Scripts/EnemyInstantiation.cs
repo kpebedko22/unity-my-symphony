@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Models;
+using UnityEngine;
 
 /// <summary>
 /// Скрипт для создания объекта Противник
@@ -11,7 +12,7 @@ public class EnemyInstantiation : MonoBehaviour {
 
     public void InstantiateEnemy(int band, Transform shooter) {
         // Инкриментируем количество созданных объектов Противников
-        GameController.totalEnemies++;
+        GameManager.Instance.EnemyWasCreated();
 
         // Создаем объект Противника на основе префаба
         // Родитель - пустой объект содержащий всех Противников

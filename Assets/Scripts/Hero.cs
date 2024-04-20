@@ -1,3 +1,5 @@
+using Models;
+
 public class Hero {
     public int Points { get; set; }
 

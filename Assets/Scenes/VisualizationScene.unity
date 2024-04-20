@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09bcb1c5090ac40d5bebf2d7d81f7f16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 9099979651681562702, guid: 30989928842544b6fa90eac8d501702d, type: 3}
+  prefab: {fileID: 9099979651681562702, guid: 30989928842544b6fa90eac8d501702d, type: 3}
 --- !u!1 &424186918
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,7 +596,6 @@ MonoBehaviour:
   textEnemiesBumped: {fileID: 224287360}
   textScore: {fileID: 1977379475}
   endGameObject: {fileID: 1013899584}
-  audioCirclesCenter: {fileID: 1781496156}
 --- !u!1 &538938040
 GameObject:
   m_ObjectHideFlags: 0
