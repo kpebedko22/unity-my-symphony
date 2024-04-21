@@ -8,9 +8,10 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameController : MonoBehaviour {
     // текстовые поля для вывода счетчиков
-    public Text textTotalEnemies;
-    public Text textEnemiesBumped;
-    public Text textScore;
+    [SerializeField] private Text textTotalEnemies;
+    [SerializeField] private Text textEnemiesBumped;
+    [SerializeField] private Text textScore;
+    [SerializeField] private Text textPoints;
 
     // объект завершения игры (меню)
     public GameObject endGameObject;
@@ -21,7 +22,7 @@ public class GameController : MonoBehaviour {
 
         GameManager.Instance.TotalEnemiesUpdate += delegate(int value) { textTotalEnemies.text = value.ToString(); };
         GameManager.Instance.EnemiesBumpedUpdate += delegate(int value) { textEnemiesBumped.text = value.ToString(); };
-        GameManager.Instance.GameOverUpdate += delegate(int? score)
+        GameManager.Instance.GameOverUpdate += delegate(int? score, int points)
         {
             // включаем отображение курсора
             Cursor.visible = true;
@@ -29,6 +30,8 @@ public class GameController : MonoBehaviour {
             textScore.text = score == null
                 ? "No enemies were spawned."
                 : "Your score is " + score + "%";
+
+            textPoints.text = $"You got {points.ToString()} extra points.";
 
             endGameObject.SetActive(true);
         };
